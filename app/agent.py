@@ -4,8 +4,13 @@ from openai import OpenAI
 from retrieval import search_documents
 from data_tools import lookup_data, proactive_issue_detection, prepare_escalation, confirm_escalation
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-MODEL = os.environ.get("OPENAI_MODEL", "gpt-4.1-mini")
+# Groq exposes an OpenAI-compatible API, so the existing tool-calling agent can
+# keep using the OpenAI SDK while avoiding the exhausted OpenAI API quota.
+client = OpenAI(
+    api_key=os.environ.get("GROQ_API_KEY"),
+    base_url="https://api.groq.com/openai/v1",
+)
+MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-20b")
 
 SYSTEM = """You are ParcelPilot Support Agent.
 
@@ -37,10 +42,19 @@ TOOLS = [
 ]
 
 def run_agent(messages, role="internal", account_id=None):
+    if not os.environ.get("GROQ_API_KEY"):
+        return "Groq API key is not configured. Add GROQ_API_KEY in Streamlit Secrets."
+
     user_context = f"\nUser context: role={role}, account_id={account_id or 'N/A'}"
     msgs = [{"role":"system","content":SYSTEM + user_context}] + messages
     for _ in range(8):
-        response = client.chat.completions.create(model=MODEL, messages=msgs, tools=TOOLS, tool_choice="auto", temperature=0)
+        response = client.chat.completions.create(
+            model=MODEL,
+            messages=msgs,
+            tools=TOOLS,
+            tool_choice="auto",
+            temperature=0,
+        )
         msg = response.choices[0].message
         if not msg.tool_calls:
             return msg.content or ""
