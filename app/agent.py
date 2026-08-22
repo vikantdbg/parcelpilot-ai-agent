@@ -1,8 +1,8 @@
 import json
 import os
 from openai import OpenAI
-from .retrieval import search_documents
-from .data_tools import lookup_data, proactive_issue_detection, prepare_escalation, confirm_escalation
+from retrieval import search_documents
+from data_tools import lookup_data, proactive_issue_detection, prepare_escalation, confirm_escalation
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 MODEL = os.environ.get("OPENAI_MODEL", "gpt-4.1-mini")
