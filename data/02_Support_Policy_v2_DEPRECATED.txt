@@ -1,0 +1,4 @@
+ParcelPilot Support Policy v2
+Status: DEPRECATED - DO NOT USE FOR CURRENT REQUESTS
+Effective: 1 January 2025. Superseded by Support Policy v3 effective 1 May 2026.
+Severity and response targets were older values. This file is intentionally retained for historical reference and must not be used as current policy.
