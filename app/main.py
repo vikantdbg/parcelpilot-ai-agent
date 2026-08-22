@@ -1,7 +1,7 @@
 import streamlit as st
 from dotenv import load_dotenv
-from .agent import run_agent
-from .data_tools import proactive_issue_detection
+from app.agent import run_agent
+from app.data_tools import proactive_issue_detection
 
 load_dotenv()
 st.set_page_config(page_title="ParcelPilot AI Support", page_icon="📦", layout="wide")
